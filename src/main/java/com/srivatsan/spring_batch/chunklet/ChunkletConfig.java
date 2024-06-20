@@ -1,9 +1,8 @@
-package com.srivatsan.spring_batch.config;
+package com.srivatsan.spring_batch.chunklet;
 
 
-import com.srivatsan.spring_batch.chunklet.FirstItemProcessor;
-import com.srivatsan.spring_batch.chunklet.FirstItemWriter;
-import com.srivatsan.spring_batch.listener.FirstJobListener;
+import com.srivatsan.spring_batch.config.AppConfig;
+import com.srivatsan.spring_batch.listener.SpringBatchJobListener;
 import com.srivatsan.spring_batch.model.CustomerData;
 import com.srivatsan.spring_batch.model.CustomerDataRowMapper;
 import lombok.AllArgsConstructor;
@@ -35,36 +34,35 @@ import java.util.Map;
 @EnableBatchProcessing
 public class ChunkletConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(ChunkletConfig.class);
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
+    private final SpringBatchJobListener springBatchJobListener;
 
-    private final FirstItemProcessor firstItemProcessor;
-    private final FirstItemWriter firstItemWriter;
-    private final FirstJobListener firstJobListener;
+    private final ChunkletReader chunkletReader;
+    private final ChunkletProcessor chunkletProcessor;
+    private final ChunkletWriter chunkletWriter;
+
     private final AppConfig appConfig;
     public DataSource dataSource;
     private CustomerDataRowMapper customerDataRowMapper;
 
-    /* with multiple threads it will not work , reads row by row */
+    /* For Single Thread */
     public JdbcCursorItemReader<CustomerData> jdbcCursorItemReader() {
         JdbcCursorItemReader<CustomerData> reader = new JdbcCursorItemReader<>();
         reader.setDataSource(dataSource);
-        reader.setSql("select * from fact_table;");
+        reader.setSql("select * from customer_data;");
         reader.setRowMapper(customerDataRowMapper);
         return reader;
     }
 
-    /* For Multi Threaded Environment */
-    @Bean
+    /* For Multi Thread */
+   /* @Bean
     public JdbcPagingItemReader<CustomerData> jdbcItemReaderPaging() throws Exception {
-        log.info("chunkSize : {}", appConfig.getChunkSize());
-        log.info("orderColumn : {}", appConfig.getOrderColumn());
 
         SqlPagingQueryProviderFactoryBean factoryBean = new SqlPagingQueryProviderFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setSelectClause("select * ");
-        factoryBean.setFromClause("from fact_table");
+        factoryBean.setFromClause("from customer_data");
 
         Map<String, Order> sortKeys = new HashMap<>();
         sortKeys.put(appConfig.getOrderColumn(), Order.DESCENDING);
@@ -76,15 +74,16 @@ public class ChunkletConfig {
         itemReader.setPageSize(appConfig.getChunkSize());
         itemReader.setRowMapper(customerDataRowMapper);
         return itemReader;
-    }
+    }*/
 
 
-    private Step dbChunkletStep() throws Exception {
-        return new StepBuilder("read_db", jobRepository)
+    private Step readDatabaseStep() throws Exception {
+        return new StepBuilder("READ_DB_STEP", jobRepository)
                 .<CustomerData, CustomerData>chunk(appConfig.getChunkSize(), platformTransactionManager)
-                .reader(jdbcItemReaderPaging())
-                .processor(firstItemProcessor)
-                .writer(firstItemWriter)
+                /*.reader(jdbcItemReaderPaging())*/
+                .reader(chunkletReader.read())
+                .processor(chunkletProcessor)
+                .writer(chunkletWriter)
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -96,13 +95,11 @@ public class ChunkletConfig {
     }
 
     @Bean
-    public Job dbReadChunkletJob() throws Exception {
-        return new JobBuilder("DB_READ_JOB", jobRepository)
+    public Job readDatabaseJob() throws Exception {
+        return new JobBuilder("READ_DB_JOB", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(firstJobListener)
-                .start(dbChunkletStep())
+                .listener(springBatchJobListener)
+                .start(readDatabaseStep())
                 .build();
     }
-
-
 }

@@ -1,7 +1,7 @@
-package com.srivatsan.spring_batch.config;
+package com.srivatsan.spring_batch.tasklet;
 
 
-import com.srivatsan.spring_batch.listener.FirstJobListener;
+import com.srivatsan.spring_batch.listener.SpringBatchJobListener;
 import com.srivatsan.spring_batch.service.SecondTasklet;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class TaskletConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final SecondTasklet secondTasklet;
-    private final FirstJobListener firstJobListener;
+    private final SpringBatchJobListener springBatchJobListener;
     public DataSource dataSource;
 
     /* create the first Task */
@@ -66,7 +66,7 @@ public class TaskletConfig {
     public Job firstJob() {
         return new JobBuilder("FIRST_JOB", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(firstJobListener)
+                .listener(springBatchJobListener)
                 .start(firstStep())
                 .next(secondStep())
                 .build();

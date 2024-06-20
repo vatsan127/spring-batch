@@ -11,9 +11,9 @@ public class CustomerDataRowMapper implements RowMapper<CustomerData> {
     @Override
     public CustomerData mapRow(ResultSet rs, int rowNum) throws SQLException {
         CustomerData customerData = new CustomerData(
-                rs.getString("trnx_Id"),
+                rs.getLong("id"),
                 rs.getString("MSISDN"),
-                rs.getString("step_Type")
+                rs.getString("trnx_id")
         );
         return customerData;
     }

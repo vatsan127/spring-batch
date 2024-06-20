@@ -7,9 +7,9 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FirstJobListener implements JobExecutionListener {
+public class SpringBatchJobListener implements JobExecutionListener {
 
-    private static final Logger log = LoggerFactory.getLogger(FirstJobListener.class);
+    private static final Logger log = LoggerFactory.getLogger(SpringBatchJobListener.class);
 
     private long startTime;
 

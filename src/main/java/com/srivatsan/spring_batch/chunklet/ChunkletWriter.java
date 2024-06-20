@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FirstItemWriter implements ItemWriter<CustomerData> {
+public class ChunkletWriter implements ItemWriter<CustomerData> {
 
     @Override
     public void write(Chunk<? extends CustomerData> chunk) throws Exception {

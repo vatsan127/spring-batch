@@ -32,7 +32,7 @@ public class BatchController {
 
     public BatchController(JobLauncher jobLauncher, JobOperator jobOperator,
                            @Qualifier("firstJob") Job firstJob,
-                           @Qualifier("dbReadChunkletJob") Job firstChunkJob) {
+                           @Qualifier("readDatabaseJob") Job firstChunkJob) {
         this.jobLauncher = jobLauncher;
         this.jobOperator = jobOperator;
         this.firstJob = firstJob;

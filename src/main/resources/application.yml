@@ -6,8 +6,10 @@ spring:
     banner-mode: off
   application:
     name: bulkProcessing
-    jpa:
-      show-sql: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
   datasource:
     driver-class-name: org.postgresql.Driver
     url: "jdbc:postgresql://localhost:5432/bulk_db"
@@ -24,7 +26,7 @@ spring-batch:
   chunkSize: 10
   threadSize: 5
   sampleDataSize: 1000
-  orderColumn: "trnx_id"
+  orderColumn: "id"
 
 
 
