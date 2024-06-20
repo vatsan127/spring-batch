@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: bulkProcessing
+    jpa:
+      show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5432/bulk_db"
+    username: postgres
+    password: password
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false #disabled job run at startup
+
+
+spring-batch:
+  chunkSize: 10
+  threadSize: 5
+  sampleDataSize: 1000
+  orderColumn: "trnx_id"
+
+
+
+
+
+
