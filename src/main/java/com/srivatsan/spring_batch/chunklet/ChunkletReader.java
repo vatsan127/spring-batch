@@ -1,22 +1,14 @@
 package com.srivatsan.spring_batch.chunklet;
 
-import com.srivatsan.spring_batch.config.AppConfig;
+import com.srivatsan.spring_batch.app.AppConfig;
 import com.srivatsan.spring_batch.model.CustomerData;
 import com.srivatsan.spring_batch.model.CustomerDataRowMapper;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -30,10 +22,8 @@ public class ChunkletReader implements ItemReader<JdbcPagingItemReader<CustomerD
     private final AppConfig appConfig;
     private CustomerDataRowMapper customerDataRowMapper;
 
-    private static final Logger log = LoggerFactory.getLogger(ChunkletReader.class);
-
     @Override
-    public JdbcPagingItemReader<CustomerData> read() throws Exception{
+    public JdbcPagingItemReader<CustomerData> read() throws Exception {
         SqlPagingQueryProviderFactoryBean factoryBean = new SqlPagingQueryProviderFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setSelectClause("select * ");

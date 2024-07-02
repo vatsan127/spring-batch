@@ -8,7 +8,6 @@ import org.springframework.batch.item.ItemProcessor;
 public class ChunkletProcessor implements ItemProcessor<CustomerData, CustomerData> {
 
     private static final Logger log = LoggerFactory.getLogger(ChunkletProcessor.class);
-    private int batch = 0;
 
     @Override
     public CustomerData process(CustomerData item) throws Exception {

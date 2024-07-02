@@ -16,12 +16,13 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job")
+@RequestMapping
 public class BatchController {
 
     private static final Logger log = LoggerFactory.getLogger(BatchController.class);
@@ -60,7 +61,7 @@ public class BatchController {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("secondJob", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
-        log.info("jobParameters : {}", jobParameters.toString());
+        log.info("BatchController : jobParameters : {}", jobParameters.toString());
         jobLauncher.run(firstChunkJob, jobParameters);
 
 
@@ -68,7 +69,13 @@ public class BatchController {
 
     @GetMapping("/stop/{executionId}")
     public void jobController(@PathVariable long executionId) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobExecutionException, JobExecutionNotRunningException {
-        log.info("Stop Job, Incoming executionId : {} ", executionId);
+        log.info("BatchController : Stop Job, Incoming executionId : {} ", executionId);
         jobOperator.stop(executionId);
+    }
+
+    @PostMapping("/insert/customer/data")
+    public ResponseEntity insertCustomerData() {
+        log.info("BatchController : Insert Customer Data ");
+        jobLauncher.run();
     }
 }

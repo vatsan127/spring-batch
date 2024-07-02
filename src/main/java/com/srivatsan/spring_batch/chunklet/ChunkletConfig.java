@@ -1,13 +1,11 @@
 package com.srivatsan.spring_batch.chunklet;
 
 
-import com.srivatsan.spring_batch.config.AppConfig;
+import com.srivatsan.spring_batch.app.AppConfig;
 import com.srivatsan.spring_batch.listener.SpringBatchJobListener;
 import com.srivatsan.spring_batch.model.CustomerData;
 import com.srivatsan.spring_batch.model.CustomerDataRowMapper;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -56,8 +54,8 @@ public class ChunkletConfig {
     }
 
     /* For Multi Thread */
-   /* @Bean
-    public JdbcPagingItemReader<CustomerData> jdbcItemReaderPaging() throws Exception {
+    @Bean
+    public JdbcPagingItemReader<CustomerData> customerDataReader() throws Exception {
 
         SqlPagingQueryProviderFactoryBean factoryBean = new SqlPagingQueryProviderFactoryBean();
         factoryBean.setDataSource(dataSource);
@@ -74,14 +72,13 @@ public class ChunkletConfig {
         itemReader.setPageSize(appConfig.getChunkSize());
         itemReader.setRowMapper(customerDataRowMapper);
         return itemReader;
-    }*/
+    }
 
 
     private Step readDatabaseStep() throws Exception {
         return new StepBuilder("READ_DB_STEP", jobRepository)
                 .<CustomerData, CustomerData>chunk(appConfig.getChunkSize(), platformTransactionManager)
-                /*.reader(jdbcItemReaderPaging())*/
-                .reader(chunkletReader.read())
+                .reader(customerDataReader())
                 .processor(chunkletProcessor)
                 .writer(chunkletWriter)
                 .taskExecutor(taskExecutor())

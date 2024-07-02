@@ -1,4 +1,4 @@
-package com.srivatsan.spring_batch.config;
+package com.srivatsan.spring_batch.app;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;

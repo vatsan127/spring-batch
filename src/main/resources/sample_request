@@ -1,0 +1,1 @@
+curl --header "Content-Type: application/json" --request POST --data '{"bulkAction":"Scheduler"}' http://localhost:8080/job/start

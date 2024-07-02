@@ -1,9 +1,6 @@
-package com.srivatsan.spring_batch.config;
+package com.srivatsan.spring_batch.chunklet;
 
-
-import com.srivatsan.spring_batch.chunklet.ChunkletProcessor;
-import com.srivatsan.spring_batch.chunklet.ChunkletReader;
-import com.srivatsan.spring_batch.chunklet.ChunkletWriter;
+import com.srivatsan.spring_batch.app.AppConfig;
 import com.srivatsan.spring_batch.model.CustomerDataRowMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-public class BeanConfig {
-
-    @Bean
-    public CustomerDataRowMapper factTableRowMapper() {
-        return new CustomerDataRowMapper();
-    }
-
+public class ChunkletBeanConfig {
     @Bean
     public ChunkletReader chunkletReader(DataSource dataSource,
                                          JdbcTemplate jdbcTemplate,
@@ -36,5 +27,4 @@ public class BeanConfig {
     public ChunkletWriter chunkletWriter() {
         return new ChunkletWriter();
     }
-
 }
